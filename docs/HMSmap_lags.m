@@ -1,13 +1,11 @@
-function[out,Xtrack]=HMSmap_lags_b(x,model,kernel,theta,vobs,E,tau,figs,stepsahead,inits)
+function[out,Xtrack]=HMSmap_lags(x,kernel,theta,vobs,E,tau,figs,stepsahead,inits)
 %HMSmap_lags(x,model,kernel,theta,vobs,E,tau,figs,stepsahead,WW)
 %this script estimates states for an Smap model in delay coordinates with observation and
 %process uncertainty using an EM algorithm
-%model doesnt do anything - just a placholder
-%Also tau (step size) is not currently used.
+%tau (step size) always set to 1.
 %kernel specifies which weighting scheme to use. Choices are exponential and Gaussian
 %theta is inverse length scale - set to 0 for global linear model
 %vobs is observation variance - set to 0 for model without observation error
-
 
 
 %distances are scaled to max for all points
@@ -23,6 +21,7 @@ switch kernel
         K=@(D) exp(-theta^4*(D).^4);
 
 end
+
 
 T=length(x);
 if isempty(inits), xp=x; else xp = inits; end 
