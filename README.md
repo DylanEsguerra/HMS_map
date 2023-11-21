@@ -12,7 +12,7 @@
 Key Words: Hidden-Markov, S-map, Empirical dynamic modeling.
 
 
-The core file contains the main HMS-map algorithm as well as it’s dependencies in the lag.m file. The False Nearest Neighbors algorithm (Kizilkya,2020) used to estimate the Embedding dimension is contained in this folder as well as a script to calculate Lyapunov Exponents from HMS-map regression coefficients.
+The docs file contains the main HMS-map algorithm as well as it’s dependencies in the lag.m file. The False Nearest Neighbors algorithm (Kizilkya,2020) used to estimate the Embedding dimension is contained in this folder as well as a script to calculate Lyapunov Exponents from HMS-map regression coefficients.
 
 The Simulations file contains the code necessary to replicate the results from the paper. This can be done by running Future_noise_level.m and modifying it to call the simulated system you are interested in (1D,2D,5D). These scripts preform smoothing, leave one out forecasting and future predictions.
 
@@ -23,3 +23,7 @@ The Figures file contains scripts used to create all figures in the paper. Figur
 ![HMSmap Algorithm](/Core/HMSmap_lags_b.m)
 
 Note that excact results will not be replicated due to random noise
+
+
+
+Example
