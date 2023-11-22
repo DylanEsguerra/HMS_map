@@ -67,7 +67,8 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Empirical Data Example</h1><!--introduction--><p>Instructions for how to apply HMSmap to Ecological data. Inscect population abundance data taken from the Global Population Dynamics Database, (Pendergast et al., 2010)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Gather Data and Initialize Parameters</a></li><li><a href="#2">Apply HMSmap to Each Time Series</a></li></ul></div><h2 id="1">Gather Data and Initialize Parameters</h2><p>step: sets how many steps ahead to forecast seq_obs: grid of observation noise values to optimize over <i>E_all</i>,_Lyp_all_,_theta_all_,_noise_all_: store parameters chosen for each time series <i>Y</i>: stores observed data, <i>XP</i>: smoothed time series, <i>X_pred</i>: Forecast <i>oe_1</i>: observation noise in one step ahead forecast <i>oe_3</i>: observation noise in three step ahead forecast <i>vp</i>: process noise estimate <i>v_I</i>: total variance in the observed data</p><pre class="codeinput">Insects_data = readmatrix(<span class="string">'/Users/dylanesguerra/Desktop/HMS_map/Emprical_data/Insects.csv'</span>);
+  </style></head><body><div class="content"><h1>Empirical Data Example</h1><!--introduction--><p>Instructions for how to apply HMSmap to Ecological data. Inscect population abundance data taken from the Global Population Dynamics Database, (Pendergast et al., 2010)</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Gather Data and Initialize Parameters</a></li><li><a href="#2">Apply HMSmap to Each Time Series</a></li></ul></div><h2 id="1">Gather Data and Initialize Parameters</h2><p>step: sets how many steps ahead to forecast seq_obs: grid of observation noise values to optimize over <i>E_all</i>,_Lyp_all_,_theta_all_,_noise_all_: store parameters chosen for each time series <i>Y</i>: stores observed data, <i>XP</i>: smoothed time series, <i>X_pred</i>: Forecast <i>oe_1</i>: observation noise in one step ahead forecast <i>oe_3</i>: observation noise in three step ahead forecast <i>vp</i>: process noise estimate <i>v_I</i>: total variance in the observed data</p><pre class="codeinput">addpath <span class="string">'/Users/dylanesguerra/Desktop/HMS_map/docs'</span>
+Insects_data = readmatrix(<span class="string">'/Users/dylanesguerra/Desktop/HMS_map/Emprical_data/Insects.csv'</span>);
 Insects_data = Insects_data(2:end,2:end); <span class="comment">%removes index</span>
 n = 16;
 step = 3;
@@ -103,10 +104,10 @@ v_I = zeros(1,n);
 
     <span class="keyword">for</span> j = 1:length(seq_obs)
         noise = (seq_obs(j)*std(data))^2;
-        fun = @(z)HMSmap_lags(data,[],<span class="string">'gaussian'</span>,z,noise,E-1,1,0,step).oe(step);
+        fun = @(z)HMSmap_lags(data,<span class="string">'gaussian'</span>,z,noise,E-1,1,0,step,[]).oe(step);
         z = fminbnd(fun,0,50);
         theta(j) = z;
-        test(j) = HMSmap_lags(data,[],<span class="string">'gaussian'</span>,z,noise,E-1,1,0,step).oe(step);
+        test(j) = HMSmap_lags(data,<span class="string">'gaussian'</span>,z,noise,E-1,1,0,step,[]).oe(step);
     <span class="keyword">end</span>
 
 
@@ -117,22 +118,21 @@ v_I = zeros(1,n);
     theta_all(i) = theta(I);
     noise_all(i) = seq_obs(I);
 
-    fun = @(z)HMSmap_lags(data,[],<span class="string">'gaussian'</span>,z,0,E-1,1,0,step).oe(step);
-    z = fminbnd(fun,0,50);
-    out = HMSmap_lags(data,[],<span class="string">'gaussian'</span>,z,0,E-1,1,0,step);<span class="comment">%theta(I);</span>
+
+    out = HMSmap_lags(data,<span class="string">'gaussian'</span>,theta_all(i),noise_all(i),E-1,1,0,step,[]);
 
     XP{i} = out.states;
     X_pred{i} = out.pred;
 
     E_all(i) = E;
 
-    oe_1(i) = sqrt(out.oe(1)/v_I);
-    oe_3(i) = sqrt(out.oe(3)/v_I);
-    vp(i) = sqrt(out.vp/v_I);
+    oe_1(i) = sqrt(out.oe(1)/var(data));
+    oe_3(i) = sqrt(out.oe(3)/var(data));
+    vp(i) = sqrt(out.vp/var(data));
     Lyp_all(i) = lyapunov_QR_lags(out.coef, T-(E-1), E-1);
 
 
-    <span class="keyword">if</span> mod(i, 1) == 0
+    <span class="keyword">if</span> mod(i, 5) == 0
         figure
         hold <span class="string">on</span>
         plot(data,<span class="string">"LineWidth"</span>,2)
@@ -145,11 +145,7 @@ v_I = zeros(1,n);
     <span class="keyword">end</span>
 
 <span class="keyword">end</span>
-</pre><pre class="codeoutput error">Undefined function 'f_fnn' for input arguments of type 'double'.
-
-Error in Empirical_Example (line 51)
-    FNN = f_fnn(data,1,10,15,2); 
-</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="Empirical_Example_01.png" alt=""> <img vspace="5" hspace="5" src="Empirical_Example_02.png" alt=""> <img vspace="5" hspace="5" src="Empirical_Example_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Empirical Data Example 
 % Instructions for how to apply HMSmap to Ecological data. 
@@ -165,6 +161,7 @@ Error in Empirical_Example (line 51)
 % _vp_: process noise estimate 
 % _v_I_: total variance in the observed data
 
+addpath '/Users/dylanesguerra/Desktop/HMS_map/docs'
 Insects_data = readmatrix('/Users/dylanesguerra/Desktop/HMS_map/Emprical_data/Insects.csv');
 Insects_data = Insects_data(2:end,2:end); %removes index
 n = 16;
@@ -211,10 +208,10 @@ for i = 1:n
     
     for j = 1:length(seq_obs)
         noise = (seq_obs(j)*std(data))^2;
-        fun = @(z)HMSmap_lags(data,[],'gaussian',z,noise,E-1,1,0,step).oe(step); 
+        fun = @(z)HMSmap_lags(data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step); 
         z = fminbnd(fun,0,50);
         theta(j) = z;
-        test(j) = HMSmap_lags(data,[],'gaussian',z,noise,E-1,1,0,step).oe(step);
+        test(j) = HMSmap_lags(data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step);
     end
 
     
@@ -225,22 +222,21 @@ for i = 1:n
     theta_all(i) = theta(I);
     noise_all(i) = seq_obs(I);
 
-    fun = @(z)HMSmap_lags(data,[],'gaussian',z,0,E-1,1,0,step).oe(step); 
-    z = fminbnd(fun,0,50);
-    out = HMSmap_lags(data,[],'gaussian',z,0,E-1,1,0,step);%theta(I);
+   
+    out = HMSmap_lags(data,'gaussian',theta_all(i),noise_all(i),E-1,1,0,step,[]);
 
     XP{i} = out.states;
     X_pred{i} = out.pred; 
 
     E_all(i) = E;
 
-    oe_1(i) = sqrt(out.oe(1)/v_I);
-    oe_3(i) = sqrt(out.oe(3)/v_I);
-    vp(i) = sqrt(out.vp/v_I);
+    oe_1(i) = sqrt(out.oe(1)/var(data));
+    oe_3(i) = sqrt(out.oe(3)/var(data));
+    vp(i) = sqrt(out.vp/var(data));
     Lyp_all(i) = lyapunov_QR_lags(out.coef, T-(E-1), E-1);
 
 
-    if mod(i, 1) == 0
+    if mod(i, 5) == 0
         figure
         hold on
         plot(data,"LineWidth",2)

@@ -12,6 +12,7 @@
 % _vp_: process noise estimate 
 % _v_I_: total variance in the observed data
 
+addpath '/Users/dylanesguerra/Desktop/HMS_map/docs'
 Insects_data = readmatrix('/Users/dylanesguerra/Desktop/HMS_map/Emprical_data/Insects.csv');
 Insects_data = Insects_data(2:end,2:end); %removes index
 n = 16;
@@ -58,10 +59,10 @@ for i = 1:n
     
     for j = 1:length(seq_obs)
         noise = (seq_obs(j)*std(data))^2;
-        fun = @(z)HMSmap_lags(data,[],'gaussian',z,noise,E-1,1,0,step).oe(step); 
+        fun = @(z)HMSmap_lags(data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step); 
         z = fminbnd(fun,0,50);
         theta(j) = z;
-        test(j) = HMSmap_lags(data,[],'gaussian',z,noise,E-1,1,0,step).oe(step);
+        test(j) = HMSmap_lags(data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step);
     end
 
     
@@ -73,7 +74,7 @@ for i = 1:n
     noise_all(i) = seq_obs(I);
 
    
-    out = HMSmap_lags(data,[],'gaussian',theta_all(i),noise_all(i),E-1,1,0,step);
+    out = HMSmap_lags(data,'gaussian',theta_all(i),noise_all(i),E-1,1,0,step,[]);
 
     XP{i} = out.states;
     X_pred{i} = out.pred; 

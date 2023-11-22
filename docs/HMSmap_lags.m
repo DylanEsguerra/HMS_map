@@ -132,6 +132,7 @@ out.pred=xpred;
 out.coef=bj;
 out.pe=pred_err;
 out.oe=obs_err;
+out.vp = vp;
 
 if figs==1,
     % figure(1);plot(1:iter,Xtrack);
