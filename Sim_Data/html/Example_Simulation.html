@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Example_Simulation</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-11-28"><meta name="DC.source" content="Example_Simulation.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1></h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Simulate Discrete Logistic Map</a></li><li><a href="#2">Apply HMSmap to Time Series</a></li><li><a href="#3">Lyapunov Exponent Calculation</a></li><li><a href="#4">Error Calculation</a></li></ul></div><h2 id="1">Simulate Discrete Logistic Map</h2><p><i>T</i>: length of series</p><p><i>r</i>: set to 4 for chaotic dynamics</p><p><i>obs</i>: noise added as a percent of the variation in x.</p><p><i>Y</i>: stores observed data, <i>XP</i>: smoothed time series, <i>X_pred</i> : Forecast</p><p>Add observation noise to the deterministic system to create <i>Y</i> the observed data</p><pre class="codeinput">addpath <span class="string">'/Users/dylanesguerra/Desktop/HMS_map/main'</span>
+
+T = 100;
+r = 4;
+x = rand(T, 1);
+<span class="keyword">for</span> t = 1:(T-1)
+    x(t+1) = r * x(t) * (1 - x(t));
+<span class="keyword">end</span>
+
+obs = 0.1;
+
+Y = x + obs * std(x) * randn(length(x), 1);
+</pre><h2 id="2">Apply HMSmap to Time Series</h2><p>step: sets how many steps ahead to forecast.</p><p><b>f_nn</b> uses the false nearest neighbors algorithm to estimate the Embedding Dimension of each series from the observed data, (Kennel et al., 1992)</p><p>The optimal <img src="Example_Simulation_eq15003285036546140546.png" alt="$$ \theta $$" style="width:5px;height:8px;"> is determind based on minimizing the observation error of the furthest step ahead forecast with fminbnd.</p><pre class="codeinput">[FNN] = f_fnn(Y, 1, 10, 15, 2);
+[~, E] = min(FNN);
+
+
+noise = (obs .* std(x)).^2;
+step = 3;
+
+fun = @(z) HMSmap_lags(Y, <span class="string">'gaussian'</span>, z, noise, E-1, 1, 0, step,[]).oe(step);
+z = fminbnd(fun, 0, 50);
+
+out = HMSmap_lags(Y, <span class="string">'gaussian'</span>, z, noise, E-1, 1, 0, step,[]);
+
+XP = out.states;
+Theta = z;
+Coefs = out.coef;
+X_pred = out.pred;
+</pre><h2 id="3">Lyapunov Exponent Calculation</h2><p>The <b>Lyapunov Exponent</b> is estimated with the <b>lyapunov_QR_lags</b> function taking in the coeficients of HMSmap as well as the embedding dimension. This is the Jacobian method of <b>LE</b> estimation using the coefficients of local linear regression in place of partial derivatives,(Deyle et al., 2016b).</p><pre class="codeinput">Lyp = lyapunov_QR_lags(Coefs, T-(E-1), E-1)
+</pre><pre class="codeoutput">
+Lyp =
+
+    0.6922
+
+</pre><h2 id="4">Error Calculation</h2><p>Compare the smoothed time series to the noise free data to get the filtered error <i>Filter_err</i>.</p><p>This should be significantly lower than the added observation error <i>obs</i></p><pre class="codeinput">Filter_err = sqrt(mean((XP(2:T) - x(2:T)).^2) / var(x(2:T))) <span class="comment">% Calculate filter error</span>
+</pre><pre class="codeoutput">
+Filter_err =
+
+    0.0778
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+
+%% Simulate Discrete Logistic Map  
+% _T_: length of series
+%
+% _r_: set to 4 for chaotic dynamics
+%
+% _obs_: noise added as a percent of the variation in x. 
+%
+% _Y_: stores observed data, _XP_: smoothed time series, _X_pred_ : Forecast
+%
+% Add observation noise to the deterministic system to create _Y_ the observed data  
+
+
+addpath '/Users/dylanesguerra/Desktop/HMS_map/main'
+
+T = 100;
+r = 4;
+x = rand(T, 1);
+for t = 1:(T-1)
+    x(t+1) = r * x(t) * (1 - x(t));
+end
+
+obs = 0.1;
+
+Y = x + obs * std(x) * randn(length(x), 1); 
+
+
+%% Apply HMSmap to Time Series 
+% step: sets how many steps ahead to forecast. 
+%
+% *f_nn* uses the false nearest neighbors algorithm to estimate the Embedding
+% Dimension of each series from the observed data, (Kennel et al., 1992)
+%
+% The optimal $$ \theta $$ is determind based on minimizing the observation error of the furthest step ahead forecast with fminbnd.
+ 
+[FNN] = f_fnn(Y, 1, 10, 15, 2); 
+[~, E] = min(FNN); 
+
+
+noise = (obs .* std(x)).^2; 
+step = 3;
+
+fun = @(z) HMSmap_lags(Y, 'gaussian', z, noise, E-1, 1, 0, step,[]).oe(step);
+z = fminbnd(fun, 0, 50); 
+
+out = HMSmap_lags(Y, 'gaussian', z, noise, E-1, 1, 0, step,[]);
+
+XP = out.states; 
+Theta = z; 
+Coefs = out.coef; 
+X_pred = out.pred; 
+
+
+%% Lyapunov Exponent Calculation
+% The *Lyapunov Exponent* is estimated with the *lyapunov_QR_lags* function taking in the coeficients of HMSmap as well as the embedding dimension.
+% This is the Jacobian method of *LE* estimation using the coefficients of
+% local linear regression in place of partial derivatives,(Deyle et al.,
+% 2016b).
+
+Lyp = lyapunov_QR_lags(Coefs, T-(E-1), E-1)
+
+%% Error Calculation 
+% Compare the smoothed time series to the noise free data to get the
+% filtered error _Filter_err_. 
+% 
+% This should be significantly lower than the added observation error _obs_
+
+Filter_err = sqrt(mean((XP(2:T) - x(2:T)).^2) / var(x(2:T))) % Calculate filter error
+
+
+##### SOURCE END #####
+--></body></html>

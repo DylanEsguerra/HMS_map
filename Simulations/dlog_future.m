@@ -42,10 +42,10 @@ for i = 1:n
     noise = (obs_err .* std(x)).^2; % Calculate noise level
 
     % Estimate theta parameter using optimization (fminbnd) and HMSmap_lags function
-    fun = @(z) HMSmap_lags(trunc_y, 'gaussian', z, noise, E-1, 1, 0, step).oe(step);
+    fun = @(z) HMSmap_lags(trunc_y, 'gaussian', z, noise, E-1, 1, 0, step,[]).oe(step);
     z = fminbnd(fun, 0, 50); % Optimize the objective function to estimate theta
 
-    out = HMSmap_lags(trunc_y, 'gaussian', z, noise, E-1, 1, 0, step); % Perform HMSmap_lags
+    out = HMSmap_lags(trunc_y, 'gaussian', z, noise, E-1, 1, 0, step,[]); % Perform HMSmap_lags
 
     XP{i} = out.states; % Store the smoothed values
     Emb{i} = E; % Store the estimated embedding dimension

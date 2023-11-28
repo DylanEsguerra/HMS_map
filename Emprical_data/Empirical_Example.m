@@ -15,7 +15,7 @@
 % _vp_: process noise estimate,
 
 
-addpath '/Users/dylanesguerra/Desktop/HMS_map/docs'
+addpath '/Users/dylanesguerra/Desktop/HMS_map/main'
 Insects_data = readmatrix('/Users/dylanesguerra/Desktop/HMS_map/Emprical_data/Insects.csv');
 Insects_data = Insects_data(2:end,2:end); %removes index
 n = 16;
