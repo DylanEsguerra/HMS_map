@@ -23,9 +23,9 @@ The Figures file contains scripts used to create all figures from simulations in
 The docs folder contains the code used to launch a Github pages website with instructions for how to apply HMSmap to simulated and emirical data.
 
 *Example 1* Simulation of Discrete Logistic Map with 10% observation noise 
-<a href="docs/Example_Simulation.html">Page 2</a>
+<a href="docs/Example_Simulation.html">Example 1</a>
 
 *Example 2* Replication of case study on Global Population Dynamics Database inscect Time Series 
-<a href="docs/Example_Empirical.html">Page 3</a>
+<a href="docs/Example_Empirical.html">Example 2</a>
 
 Note that exact results will not be replicated due to random noise
