@@ -26,10 +26,12 @@ The docs folder contains the code used to launch a Github pages website with ins
 <a href="docs/Example_Simulation.html">Example 1</a>
 
 Code to download is found in /Simulations/Example_Simulation.m
+https://github.com/DylanEsguerra/HMS_map/blob/main/Simulations/Example_Simulation.m
 
 *Example 2* Replication of case study on Global Population Dynamics Database inscect Time Series 
 <a href="docs/Example_Empirical.html">Example 2</a>
 
 Code to download is found in /Empirical_data/Example_Empirical.m
+https://github.com/DylanEsguerra/HMS_map/blob/main/Emprical_data/Empirical_Example.m
 
 Note that exact results will not be replicated due to random noise
