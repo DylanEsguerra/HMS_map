@@ -1,5 +1,5 @@
 function[out,Xtrack]=HMSmap_lags(x,kernel,theta,vobs,E,tau,figs,stepsahead,inits)
-%HMSmap_lags(x,model,kernel,theta,vobs,E,tau,figs,stepsahead,WW)
+%HMSmap_lags(x,model,kernel,theta,vobs,E,tau,figs,stepsahead,inits)
 %this script estimates states for an Smap model in delay coordinates with observation and
 %process uncertainty using an EM algorithm
 %tau (step size) always set to 1.
@@ -10,7 +10,7 @@ function[out,Xtrack]=HMSmap_lags(x,kernel,theta,vobs,E,tau,figs,stepsahead,inits
 
 %distances are scaled to max for all points
 
-switch kernel
+switch kernel % Selects Kernel from user input. Gaussian used for all experiments shown in the paper
     case 'exponential'
         K=@(D) exp(-theta*D);
     case 'gaussian'
@@ -56,7 +56,7 @@ while del>tol & iter<niter
     xj=xx(:,1); %first column
 
   
-    %optimize b given x
+    % (M-) step optimize b given x 
     vp=0;
     for j=1:n  %T-E columns 
         dj=sqrt(sum((H(j,:)-H).^2,2))/maxD;
@@ -65,7 +65,7 @@ while del>tol & iter<niter
 
         [U,S,V]=svd(wj.*H); %singular value decomposition 
         iS=S;for k=1:size(S,2), iS(k,k)=double(S(k,k)>1e-5)/(S(k,k)+double(S(k,k)<1e-5));end
-        bj(:,j)=V*(iS)'*U'*(wj.*xj);  %*******************************************
+        bj(:,j)=V*(iS)'*U'*(wj.*xj);  
         
         bs=sum(bj(:,j));
         if (isinf(bs)|isnan(bs)), bj(:,j)=[xj(j) 1]';end
@@ -76,13 +76,13 @@ while del>tol & iter<niter
     end
     vrat=vobs/vp; 
     
-    %compute expected value of x given b and y  
+    %(E-) step compute expected value of x given b and y  
     xold=xp;
     A(E+1:T)=bj(E+1,:)';%intercepts
     Q=(It-B);if any(isinf(Q(:)))|any(isnan(Q(:))), keyboard;end
     Ax=vrat*Q'*A; 
     
-    %*********************************************************************
+    
     xp=(It+vrat*Q'*Q)\(x+Ax);
     xp=xp*mean(xold)/mean(xp);
     %xp=(xp-mean(xp)+mean(x))*std(x)/std(xp);%maintain center and scale

@@ -56,10 +56,7 @@ X_pred = out.pred;
 % some diagnostic plots are automatically created. 
 %
 % HMSmap_lags(x,model,kernel,theta,vobs,E,tau,figs,stepsahead,inits)
-%
-% Top row plots observed data in red and smoothed data in blue. The data is plotted against a time lag x(E:T-k),x(E+k:T) to show an emndedding of the data in 2d space k steps ahead. 
-% Bottom row plots observed data vs smoothed data in black and the observed
-% data vs predictions in green at each step ahead. 
+% Top row plots observed data in red and smoothed data in blue.  
 
 
 %% Lyapunov Exponent Calculation

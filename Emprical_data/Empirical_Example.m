@@ -18,7 +18,9 @@
 addpath '/Users/dylanesguerra/Desktop/HMS_map/main'
 Insects_data = readmatrix('/Users/dylanesguerra/Desktop/HMS_map/Emprical_data/Insects.csv');
 Insects_data = Insects_data(2:end,2:end); %removes index
-n = 16;
+columnsToRemove = [11, 15];
+Insects_data(:, columnsToRemove) = [];
+n = 14;
 step = 3;
 seq_obs = 0:0.1:1; 
 
@@ -57,7 +59,7 @@ for i = 1:n
     data = Insects_data(~isnan(Insects_data(:, i)), i);
     Y{i} = data;
     
-    log_data = log(data);
+    log_data = data;%log(data);
     T = length(data);
 
     FNN = f_fnn(log_data,1,10,15,2); 
@@ -98,11 +100,12 @@ for i = 1:n
     Lyp_all(i) = lyapunov_QR_lags(out.coef, T-(E-1), E-1);
 
 
-    if mod(i, 3) == 0
+    if mod(i, 1) == 0
         figure
         hold on
         plot(data,"LineWidth",2)
-        plot(exp(out.states),"LineWidth",2)
+        %plot(exp(out.states),"LineWidth",2)
+        plot(out.states,"LineWidth",2)
         hold off
         legend("Observed","Smoothed","FontSize",15)
         

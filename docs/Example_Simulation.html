@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Example_Simulation</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-11-28"><meta name="DC.source" content="Example_Simulation.m"><style type="text/css">
+      --><title>Example_Simulation</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-12-04"><meta name="DC.source" content="Example_Simulation.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1></h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Simulate Discrete Logistic Map</a></li><li><a href="#2">Apply HMSmap to Time Series</a></li><li><a href="#3">Lyapunov Exponent Calculation</a></li><li><a href="#4">Error Calculation</a></li></ul></div><h2 id="1">Simulate Discrete Logistic Map</h2><p><i>T</i>: length of series</p><p><i>r</i>: set to 4 for chaotic dynamics</p><p><i>obs</i>: noise added as a percent of the variation in x.</p><p><i>Y</i>: stores observed data, <i>XP</i>: smoothed time series, <i>X_pred</i> : Forecast</p><p>Add observation noise to the deterministic system to create <i>Y</i> the observed data</p><pre class="codeinput">addpath <span class="string">'/Users/dylanesguerra/Desktop/HMS_map/main'</span>
+  </style></head><body><div class="content"><h1></h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Simulate Discrete Logistic Map</a></li><li><a href="#2">Apply HMSmap to Time Series</a></li><li><a href="#3">Figures</a></li><li><a href="#4">Lyapunov Exponent Calculation</a></li><li><a href="#5">Error Calculation</a></li></ul></div><h2 id="1">Simulate Discrete Logistic Map</h2><p><i>T</i>: length of series</p><p><i>r</i>: set to 4 for chaotic dynamics</p><p><i>obs</i>: noise added as a percent of the variation in x.</p><p><i>Y</i>: stores observed data, <i>XP</i>: smoothed time series, <i>X_pred</i> : Forecast</p><p>Add observation noise to the deterministic system to create <i>Y</i> the observed data</p><pre class="codeinput">addpath <span class="string">'/Users/dylanesguerra/Desktop/HMS_map/main'</span>
 
 T = 100;
 r = 4;
@@ -89,23 +89,23 @@ step = 3;
 fun = @(z) HMSmap_lags(Y, <span class="string">'gaussian'</span>, z, noise, E-1, 1, 0, step,[]).oe(step);
 z = fminbnd(fun, 0, 50);
 
-out = HMSmap_lags(Y, <span class="string">'gaussian'</span>, z, noise, E-1, 1, 0, step,[]);
+out = HMSmap_lags(Y, <span class="string">'gaussian'</span>, z, noise, E-1, 1, 1, step,[]);
 
 XP = out.states;
 Theta = z;
 Coefs = out.coef;
 X_pred = out.pred;
-</pre><h2 id="3">Lyapunov Exponent Calculation</h2><p>The <b>Lyapunov Exponent</b> is estimated with the <b>lyapunov_QR_lags</b> function taking in the coeficients of HMSmap as well as the embedding dimension. This is the Jacobian method of <b>LE</b> estimation using the coefficients of local linear regression in place of partial derivatives,(Deyle et al., 2016b).</p><pre class="codeinput">Lyp = lyapunov_QR_lags(Coefs, T-(E-1), E-1)
+</pre><img vspace="5" hspace="5" src="Example_Simulation_01.png" alt=""> <h2 id="3">Figures</h2><p>By setting the figs parameter of <b>HMSmao_lags.m</b> to 1 rather than zero some diagnostic plots are automatically created.</p><p>HMSmap_lags(x,model,kernel,theta,vobs,E,tau,figs,stepsahead,inits)</p><p>Top row plots observed data in red and smoothed data in blue. The data is plotted against a time lag x(E:T-k),x(E+k:T) to show an emndedding of the data in 2d space k steps ahead. Bottom row plots observed data vs smoothed data in black and the observed data vs predictions in green at each step ahead.</p><h2 id="4">Lyapunov Exponent Calculation</h2><p>The <b>Lyapunov Exponent</b> is estimated with the <b>lyapunov_QR_lags</b> function taking in the coeficients of HMSmap as well as the embedding dimension. This is the Jacobian method of <b>LE</b> estimation using the coefficients of local linear regression in place of partial derivatives,(Deyle et al., 2016b).</p><pre class="codeinput">Lyp = lyapunov_QR_lags(Coefs, T-(E-1), E-1)
 </pre><pre class="codeoutput">
 Lyp =
 
-    0.6922
+    0.4930
 
-</pre><h2 id="4">Error Calculation</h2><p>Compare the smoothed time series to the noise free data to get the filtered error <i>Filter_err</i>.</p><p>This should be significantly lower than the added observation error <i>obs</i></p><pre class="codeinput">Filter_err = sqrt(mean((XP(2:T) - x(2:T)).^2) / var(x(2:T))) <span class="comment">% Calculate filter error</span>
+</pre><h2 id="5">Error Calculation</h2><p>Compare the smoothed time series to the noise free data to get the filtered error <i>Filter_err</i>.</p><p>This should be significantly lower than the added observation error <i>obs</i></p><pre class="codeinput">Filter_err = sqrt(mean((XP(2:T) - x(2:T)).^2) / var(x(2:T))) <span class="comment">% Calculate filter error</span>
 </pre><pre class="codeoutput">
 Filter_err =
 
-    0.0778
+    0.1133
 
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -154,12 +154,23 @@ step = 3;
 fun = @(z) HMSmap_lags(Y, 'gaussian', z, noise, E-1, 1, 0, step,[]).oe(step);
 z = fminbnd(fun, 0, 50); 
 
-out = HMSmap_lags(Y, 'gaussian', z, noise, E-1, 1, 0, step,[]);
+out = HMSmap_lags(Y, 'gaussian', z, noise, E-1, 1, 1, step,[]);
 
 XP = out.states; 
 Theta = z; 
 Coefs = out.coef; 
 X_pred = out.pred; 
+
+
+%% Figures
+% By setting the figs parameter of *HMSmao_lags.m* to 1 rather than zero
+% some diagnostic plots are automatically created. 
+%
+% HMSmap_lags(x,model,kernel,theta,vobs,E,tau,figs,stepsahead,inits)
+%
+% Top row plots observed data in red and smoothed data in blue. The data is plotted against a time lag x(E:T-k),x(E+k:T) to show an emndedding of the data in 2d space k steps ahead. 
+% Bottom row plots observed data vs smoothed data in black and the observed
+% data vs predictions in green at each step ahead. 
 
 
 %% Lyapunov Exponent Calculation
