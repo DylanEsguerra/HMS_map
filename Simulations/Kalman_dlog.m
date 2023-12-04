@@ -1,0 +1,55 @@
+function[MSE,Total_MSE,Predictions,X_pred,Emb,Coefs,X_true,Y_noise,XP] = Kalman_dlog(n,start,step,burn,obs,smap)
+
+T = 221; % Time series length
+
+MSE = rand(n, length(start+burn-1:T-step)); % Matrix to store MSE values
+Predictions = cell(n, 1); % Cell array to store predictions
+
+XP = cell(n, 1); % Cell array to store smoothed values
+Emb = cell(n, 1); % Cell array to store embedding dimensions
+
+X_true = cell(n, 1); % Cell array to store true values
+Y_noise = cell(n, 1); % Cell array to store noisy observed data
+Coefs = cell(n, 1); % Cell array to store coefficients
+X_pred = cell(n, 1); % Cell array to store future predictions
+
+% Data from Discrete Logistic
+r = 4; % Logistic map parameter
+for i = 1:n
+    x = rand(T, 1);
+    for t = 1:(T-1)
+        x(t+1) = r * x(t) * (1 - x(t));
+    end
+    
+    % Drop the burn-in
+    x = x(burn:T);
+    y = x + obs * std(x) * randn(length(x), 1); % Adds observational noise
+
+    X_true{i} = x;
+    Y_noise{i} = y;
+
+    trunc_y = y(1:start); % Truncated part of observed data
+
+    [FNN] = f_fnn(trunc_y, 1, 10, 15, 2); 
+    [~, E] = min(FNN); % Estimate embedding dimension using False Nearest Neighbors (FNN)
+
+    obs_err = obs;
+    % If smap noise is still added to data, but not seen by algorithm
+    if smap
+        obs_err = 0;
+    end
+
+    noise = (obs_err .* std(x)).^2; % Calculate noise level
+
+    out = HMSmap_lags(trunc_y, 'gaussian', 0, noise, E-1, 1, 0, step,[]); % set theta to 0 for Kalman Filter
+
+    XP{i} = out.states; % Store the smoothed values
+    Emb{i} = E; % Store the estimated embedding dimension
+    
+    Coefs{i} = out.coef; % Store the coefficients
+    X_pred{i} = out.pred; % Store the future predictions
+
+    [MSE(i, :), Predictions{i}] = Future_pred_sim(x, y, noise, step, start, E, 0); % Perform future predictions and calculate MSE
+end
+
+Total_MSE = mean(MSE); % Calculate the mean MSE

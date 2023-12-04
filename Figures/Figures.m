@@ -23,9 +23,7 @@ for i = 1:5
         
         Lyp(i, j) = lyapunov_QR_lags(Coefs{i}{j}, 101 - (E{i}{j} - 1), E{i}{j} - 1); % Calculate Lyapunov exponent
         
-        %Var_species = Var_species + var(X_true{i}{j}(:,5));
         
-        %Lyp(i, j) = lyapunov_QR_lags(Coefs{i}{j}, 101, 1);
     end 
     
     Noise_m(i) = mean(Noise(i, :)); % Calculate mean noise value
@@ -42,13 +40,14 @@ end
 
 % figure(1)
 hold on
-plot(obs, Obs_err_m, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot observation error
-plot(obs, Noise_m, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot noise values
-plot(obs, Filter_err_m, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot filter error
-% errorbar(obs, Filter_err_m, Filter_err_sd, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot filter error with error bars
-% plot(obs, obs, 'LineWidth', 2)
+%plot(obs, Filter_err_m, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot filter error
+errorbar(obs, Filter_err_m, Filter_err_sd, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot filter error with error bars
+%plot(obs, Obs_err_m, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot observation error
+%plot(obs, Noise_m, '-o', 'MarkerSize', 10, 'LineWidth', 2) % Plot noise value
+plot(obs, obs, 'LineWidth', 2)
 % set(gca, 'FontSize', 20)
-legend("HMS-map Smoothing", "X = Y", 'FontSize', 20)
+%legend("HMS-map Smoothing", "X = Y", 'FontSize', 20)
+legend("Kalman Filter", "X = Y", 'FontSize', 20)
 % xlabel("Observation Noise", 'FontSize', 20)
 % ylabel("MSE", 'FontSize', 20)
 % title('1D', 'FontSize', 20);
@@ -57,10 +56,10 @@ hold off
 figure(2)
 hold on
 dropplot(Lyp', obs) % Plot Lyapunov exponents
-yline(-0.2056, 'r', 'LineWidth', 5) % Add a line at a specific Lyapunov exponent value
+yline(0.69, 'r', 'LineWidth', 5) % Add a line at a specific Lyapunov exponent value
 %cyclic dlog -0.0999, 2d -0.2056
 %3.5 -0.8736
 xlabel("Observation Noise", 'FontSize', 20)
 ylabel("Lyapunov Exponent", 'FontSize', 20)
-title("2D HMS-map Lyapunov Exponent", 'FontSize', 20)
+title("Kalman Filter Lyapunov Exponent 1D", 'FontSize', 20)
 hold off 

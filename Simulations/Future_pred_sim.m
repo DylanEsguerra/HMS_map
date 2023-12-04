@@ -8,7 +8,7 @@ function [MSE, Predictions] = Future_pred_sim(X, Y, noise, step, start, E, Theta
 %   step:   Number of future steps to predict.
 %   start:  Starting index for test data.
 %   E:      Embedding dimension from FNN.
-%   Theta:  Local weighting Parameter for the HMSmap_lags_b function.
+%   Theta:  Local weighting Parameter for the HMSmap_lags function.
 %
 % Outputs:
 %   MSE:         Mean squared error for each prediction.
@@ -30,7 +30,7 @@ for i = start:N-step % Loop over test data
     T = length(trunc);
 
     % Perform future forecast using HMSmap_lags_b function
-    out = HMSmap_lags_b(trunc, [], 'gaussian', Theta, noise, E-1, 1, 0, step, inits);
+    out = HMSmap_lags(trunc, 'gaussian', Theta, noise, E-1, 1, 0, step, inits);
     inits = out.states;
     inits(length(trunc)+1) = Y(i + 1);
 
