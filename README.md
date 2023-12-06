@@ -1,4 +1,6 @@
-#Accounting for observation noise in equation-free forecasting: the hidden-Markov S-map
+#HMS_map
+
+##Accounting for observation noise in equation-free forecasting: the hidden-Markov S-map
 
 
 1. Ecosystems contain many species interacting with each other and the environment. Quantitative understanding of these complex systems is limited by which aspects of the ecosystem can be observed. Often relevant potential variables are left out due to them being unknown or difficult to measure. Empirical dynamic modeling and nonlinear forecasting can be used to infer unobserved ecosystem dynamics with minimal assumptions. Enthusiasm is growing for these methods across a wide range of disciplines.
@@ -28,7 +30,7 @@ The docs folder contains the code used to launch a Github pages website with ins
 <a href="docs/Example_Simulation.html">Example 1</a>
 
 *Example 2* Replication of case study on Global Population Dynamics Database inscect Time Series
-<a href="docs/Example_Empirical.html">Example 2</a>
+<a href="docs/Empirical_Example.html">Example 2</a>
 
 
 Note that exact results will not be replicated due to random noise
