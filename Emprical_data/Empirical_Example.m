@@ -59,7 +59,7 @@ for i = 1:n
     data = Insects_data(~isnan(Insects_data(:, i)), i);
     Y{i} = data;
     
-    log_data = data;%log(data);
+    log_data = log(data);
     T = length(data);
 
     FNN = f_fnn(log_data,1,10,15,2); 
@@ -104,8 +104,8 @@ for i = 1:n
         figure
         hold on
         plot(data,"LineWidth",2)
-        %plot(exp(out.states),"LineWidth",2)
-        plot(out.states,"LineWidth",2)
+        plot(exp(out.states),"LineWidth",2)
+        %plot(out.states,"LineWidth",2)
         hold off
         legend("Observed","Smoothed","FontSize",15)
         
