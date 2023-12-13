@@ -18,9 +18,7 @@
 addpath '/Users/dylanesguerra/Desktop/HMS_map/main'
 Insects_data = readmatrix('/Users/dylanesguerra/Desktop/HMS_map/Emprical_data/Insects.csv');
 Insects_data = Insects_data(2:end,2:end); %removes index
-columnsToRemove = [11, 15];
-Insects_data(:, columnsToRemove) = [];
-n = 14;
+n = 16;
 step = 3;
 seq_obs = 0:0.1:1; 
 
@@ -59,10 +57,10 @@ for i = 1:n
     data = Insects_data(~isnan(Insects_data(:, i)), i);
     Y{i} = data;
     
-    log_data = log(data);
+    
     T = length(data);
 
-    FNN = f_fnn(log_data,1,10,15,2); 
+    FNN = f_fnn(data,1,10,15,2); 
     [~,E]= min(FNN);
 
     
@@ -71,11 +69,11 @@ for i = 1:n
     theta = zeros(1,length(seq_obs));
     
     for j = 1:length(seq_obs)
-        noise = (seq_obs(j)*std(log_data))^2;
-        fun = @(z)HMSmap_lags(log_data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step); 
+        noise = (seq_obs(j)*std(data))^2;
+        fun = @(z)HMSmap_lags(data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step); 
         z = fminbnd(fun,0,50);
         theta(j) = z;
-        test(j) = HMSmap_lags(log_data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step);
+        test(j) = HMSmap_lags(data,'gaussian',z,noise,E-1,1,0,step,[]).oe(step);
     end
 
     
@@ -87,25 +85,24 @@ for i = 1:n
     noise_all(i) = seq_obs(I);
 
    
-    out = HMSmap_lags(log_data,'gaussian',theta_all(i),noise_all(i),E-1,1,0,step,[]);
+    out = HMSmap_lags(data,'gaussian',theta_all(i),noise_all(i),E-1,1,0,step,[]);
 
     XP{i} = out.states;
     X_pred{i} = out.pred; 
 
     E_all(i) = E;
 
-    oe_1(i) = sqrt(out.oe(1)/var(log_data));
-    oe_3(i) = sqrt(out.oe(3)/var(log_data));
-    vp(i) = sqrt(out.vp/var(log_data));
+    oe_1(i) = sqrt(out.oe(1)/var(data));
+    oe_3(i) = sqrt(out.oe(3)/var(data));
+    vp(i) = sqrt(out.vp/var(data));
     Lyp_all(i) = lyapunov_QR_lags(out.coef, T-(E-1), E-1);
 
 
-    if mod(i, 1) == 0
+    if mod(i, 4) == 0
         figure
         hold on
         plot(data,"LineWidth",2)
-        plot(exp(out.states),"LineWidth",2)
-        %plot(out.states,"LineWidth",2)
+        plot(out.states,"LineWidth",2)
         hold off
         legend("Observed","Smoothed","FontSize",15)
         
