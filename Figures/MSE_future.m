@@ -3,7 +3,7 @@
 n = 100; % Number of iterations
 T = 122; % time series length after burn
 start = 101; % Starting index for future forecasts
-step = 3; % Number of future steps to predict
+step = 1;% Number of future steps to predict
 N = length(start:T-3); % Number of future prediction points
 
 MSE_mat = zeros(5, N, n); % Matrix to store MSE for each noise level, future prediction point, and iteration
