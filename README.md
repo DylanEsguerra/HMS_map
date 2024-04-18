@@ -1,6 +1,8 @@
 
 Accounting for observation noise in equation-free forecasting: the hidden-Markov S-map
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10989649.svg)](https://doi.org/10.5281/zenodo.10989649)
+
 
 1. Ecosystems contain many species interacting with each other and the environment. Quantitative understanding of these complex systems is limited by which aspects of the ecosystem can be observed. Often relevant potential variables are left out due to them being unknown or difficult to measure. Empirical dynamic modeling and nonlinear forecasting can be used to infer unobserved ecosystem dynamics with minimal assumptions. Enthusiasm is growing for these methods across a wide range of disciplines.
 
