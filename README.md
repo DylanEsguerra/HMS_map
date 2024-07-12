@@ -1,7 +1,7 @@
 
 Accounting for observation noise in equation-free forecasting: the hidden-Markov S-map
 
-Published in Methods in Ecology and Evolution on July 1st 2024  [![Link to Paper]https://doi.org/10.1111/2041-210X.14337]
+Published in Methods in Ecology and Evolution on July 1st 2024  [Link to Paper](https://doi.org/10.1111/2041-210X.14337)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10989649.svg)](https://doi.org/10.5281/zenodo.10989649)
 
